@@ -560,7 +560,13 @@ public class Socket {
             isCreated = true;
             try {
                 if (!streaming || !usingSocks()) {
-                    impl.bind(addr, localPort);
+                    //
+                    // Bind will happen during connect for INADDR_ANY:0
+                    // Save the system call in the default case
+                    //
+                    if (! addr.isAnyLocalAddress() || 0 != localPort) {
+                        impl.bind(addr, localPort);
+                    }
                 }
                 isBound = true;
                 impl.connect(dstAddress, dstPort);
@@ -829,17 +835,8 @@ public class Socket {
         checkDestination(addr, port);
         synchronized (connectLock) {
             try {
-                if (!isBound()) {
-                    // socket already created at this point by earlier call or
-                    // checkOpenAndCreate this caused us to lose socket
-                    // options on create
-                    // impl.create(true);
-                    if (!usingSocks()) {
-                        impl.bind(Inet4Address.ANY, 0);
-                    }
-                    isBound = true;
-                }
                 impl.connect(remoteAddr, timeout);
+                isBound = true;
                 isConnected = true;
                 cacheLocalAddress();
             } catch (IOException e) {

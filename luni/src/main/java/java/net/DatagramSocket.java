@@ -52,6 +52,26 @@ public class DatagramSocket {
 
     private Object lock = new Object();
 
+    /** @hide
+     * Constructs either a bound or unbound UDP datagramsocket
+     *
+     * @param toBind
+     *             a boolean indicating to bind the socket to any available port
+     *             on the local host, or not.
+     * @throws SocketException
+     *             if an error occurs while creating or binding the socket.
+     */
+    public DatagramSocket(boolean toBind) throws SocketException {
+        super();
+        if (toBind) {
+            checkPort(0);
+            createSocket(0, Inet4Address.ANY);
+        } else {
+            impl = factory != null ? factory.createDatagramSocketImpl() : new PlainDatagramSocketImpl();
+            impl.create();
+        }
+    }
+
     /**
      * Constructs a UDP datagram socket which is bound to any available port on
      * the localhost.
