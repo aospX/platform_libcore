@@ -231,6 +231,7 @@ public final class MimeUtils {
         add("audio/x-sd2", "sd2");
         add("audio/x-wav", "wav");
         add("image/bmp", "bmp");
+        add("audio/x-qcp", "qcp");
         add("image/gif", "gif");
         add("image/ico", "cur");
         add("image/ico", "ico");
